@@ -1,12 +1,22 @@
-import { Controller, Get } from '@nestjs/common';
-import { AppService } from './app.service';
+import {
+    Controller,
+    Get,
+    HttpCode,
+    HttpStatus,
+    Redirect,
+} from '@nestjs/common';
+import { ApiTags } from '@nestjs/swagger';
 
+@ApiTags('Health Check')
 @Controller()
 export class AppController {
-  constructor(private readonly appService: AppService) {}
+    @Get()
+    @Redirect('health-check', 301)
+    redirect() {}
 
-  @Get()
-  getHello(): string {
-    return this.appService.getHello();
-  }
+    @Get('health-check')
+    @HttpCode(HttpStatus.OK)
+    healthCheck(): string {
+        return 'Up & running';
+    }
 }
