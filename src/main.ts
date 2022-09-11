@@ -31,7 +31,7 @@ async function bootstrap() {
     // Swagger API Documentation
     const options = new DocumentBuilder()
         .setTitle('REST API')
-        .setDescription('REST API description')
+        .setDescription('Stock service REST API')
         .setVersion('0.1.0')
         .addBearerAuth()
         .build();
