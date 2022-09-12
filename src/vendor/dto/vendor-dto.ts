@@ -4,19 +4,16 @@ import { Type } from 'class-transformer';
 export class VendorDto {
     @IsNotEmpty()
     @IsString()
-    @Length(
-        parseInt(process.env.MIN_VENDOR_ID_LENGTH, 10) || 1,
-        parseInt(process.env.MAX_VENDO_ID_LENGTH, 10) || 40,
-    )
+    @Length(parseInt(process.env.MIN_VENDOR_ID_LENGTH, 10) || 1, parseInt(process.env.MAX_VENDO_ID_LENGTH, 10) || 40)
     vendorID: string;
 
     @IsNotEmpty()
     @Min(0)
     @Type(() => Number)
-    softenerAmount: number;
+    softener: number;
 
     @IsNotEmpty()
     @Min(0)
     @Type(() => Number)
-    detergentAmount: number;
+    detergent: number;
 }

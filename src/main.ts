@@ -5,7 +5,10 @@ import { AppModule } from './app/app.module';
 import helmet from 'helmet';
 
 async function bootstrap() {
-    const app = await NestFactory.create(AppModule, { cors: true });
+    const app = await NestFactory.create(AppModule, {
+        cors: true,
+        logger: ['error', 'warn', 'debug', 'log'],
+    });
 
     // Request Validation
     app.useGlobalPipes(
@@ -29,12 +32,7 @@ async function bootstrap() {
     // Helmet Middleware against known security vulnerabilities
     app.use(helmet());
     // Swagger API Documentation
-    const options = new DocumentBuilder()
-        .setTitle('REST API')
-        .setDescription('Stock service REST API')
-        .setVersion('0.1.0')
-        .addBearerAuth()
-        .build();
+    const options = new DocumentBuilder().setTitle('REST API').setDescription('Stock service REST API').setVersion('0.1.0').addBearerAuth().build();
     const document = SwaggerModule.createDocument(app, options);
     SwaggerModule.setup('api', app, document);
 

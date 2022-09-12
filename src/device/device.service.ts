@@ -1,4 +1,4 @@
-import { ForbiddenException, Injectable } from '@nestjs/common';
+import { ForbiddenException, Injectable, Logger } from '@nestjs/common';
 import { Device } from '@prisma/client';
 import { ConfigService } from '@nestjs/config';
 import { PrismaService } from '../prisma/prisma.service';
@@ -7,21 +7,22 @@ import { DeviceDto, UpdateDataDto } from './dto';
 
 @Injectable()
 export class DeviceService {
-    constructor(
-        private config: ConfigService,
-        private prisma: PrismaService,
-        private vendor: VendorService,
-    ) {}
+    private readonly logger = new Logger(DeviceService.name);
+
+    constructor(private config: ConfigService, private prisma: PrismaService, private vendor: VendorService) {}
 
     consume = async (deviceID: string, productType: string, amount: number) => {
         try {
             const device: Device = await this.getDeviceById(deviceID);
             const updatedAmount = device[productType] - amount;
             this.checkStock(updatedAmount);
-            return this.updateProductStock(deviceID, productType, {
+            const updatedDevice: Device = await this.updateProductStock(deviceID, productType, {
                 set: updatedAmount,
             } as UpdateDataDto);
+            this.logger.debug(`Device with ID: ${updatedDevice.id} consumed ${amount} ${productType}`);
+            return updatedDevice;
         } catch (e) {
+            this.logger.error(e);
             if (e instanceof ForbiddenException) {
                 throw e;
             } else {
@@ -32,36 +33,31 @@ export class DeviceService {
 
     create = async (data: DeviceDto) => {
         try {
-            return await this.prisma.device.create({ data });
+            const device: Device = await this.prisma.device.create({ data });
+            this.logger.debug(`Device created with ID: ${device.id}`);
+            return device;
         } catch (e) {
+            this.logger.error(e);
             throw new ForbiddenException('Device is already exists.');
         }
     };
 
     order = async (deviceId: string, productType: string, vendorId: string) => {
-        const orderAmount: number = parseInt(
-            this.config.get('ORDER_AMOUNT'),
-            10,
-        );
+        const orderAmount: number = parseInt(this.config.get('ORDER_AMOUNT'), 10);
         try {
-            return await this.prisma.$transaction(async () => {
+            const updatedDevice: Device = await this.prisma.$transaction(async () => {
                 if (vendorId) {
-                    await this.vendor.updateProductStock(
-                        vendorId,
-                        productType,
-                        orderAmount,
-                    );
+                    await this.vendor.updateProductStock(vendorId, productType, orderAmount);
                 }
-                const device: Device = await this.updateProductStock(
-                    deviceId,
-                    productType,
-                    {
-                        increment: orderAmount,
-                    } as UpdateDataDto,
-                );
+                const device: Device = await this.updateProductStock(deviceId, productType, {
+                    increment: orderAmount,
+                } as UpdateDataDto);
                 return device;
             });
+            this.logger.debug(`Device with ID: ${updatedDevice.id} increased stock by ${orderAmount} ${productType}`);
+            return updatedDevice;
         } catch (e) {
+            this.logger.error(e);
             if (e instanceof ForbiddenException) {
                 throw e;
             } else {
@@ -70,11 +66,7 @@ export class DeviceService {
         }
     };
 
-    updateProductStock = async (
-        deviceID: string,
-        productType: string,
-        updatedData: UpdateDataDto,
-    ) => {
+    updateProductStock = async (deviceID: string, productType: string, updatedData: UpdateDataDto) => {
         try {
             return await this.prisma.device.update({
                 where: { deviceID },
@@ -83,6 +75,7 @@ export class DeviceService {
                 },
             });
         } catch (e) {
+            this.logger.error(e);
             throw new ForbiddenException('Stock update is failed.');
         }
     };

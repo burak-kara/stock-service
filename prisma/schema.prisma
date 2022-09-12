@@ -13,9 +13,9 @@ model Device {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  deviceID         String @unique
-  softenerAmount   Int
-  detergentAmount  Int
+  deviceID  String @unique
+  softener  Int
+  detergent Int
 }
 
 model Vendor {
@@ -23,7 +23,16 @@ model Vendor {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  vendorID         String @unique
-  softenerAmount   Int @default(5000)
-  detergentAmount  Int @default(5000)
+  vendorID  String @unique
+  softener  Int @default(5000)
+  detergent Int @default(5000)
+}
+
+model Product {
+  id        Int   @id @default(autoincrement())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  productID String @unique
+  type      String
 }
