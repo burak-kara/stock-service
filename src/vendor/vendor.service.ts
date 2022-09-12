@@ -23,7 +23,7 @@ export class VendorService {
     ) => {
         try {
             const vendor: Vendor = await this.getVendorById(vendorID);
-            const updatedAmount = vendor[productType] - orderAmount;
+            const updatedAmount: number = vendor[productType] - orderAmount;
             this.checkStock(updatedAmount);
             return await this.prisma.vendor.update({
                 where: { vendorID },

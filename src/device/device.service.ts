@@ -3,29 +3,24 @@ import { Device } from '@prisma/client';
 import { ConfigService } from '@nestjs/config';
 import { PrismaService } from '../prisma/prisma.service';
 import { VendorService } from '../vendor/vendor.service';
-import { DeviceDto } from './dto';
+import { DeviceDto, UpdateDataDto } from './dto';
 
 @Injectable()
 export class DeviceService {
     constructor(
         private config: ConfigService,
         private prisma: PrismaService,
-        private vendorService: VendorService,
+        private vendor: VendorService,
     ) {}
 
-    consume = async (deviceId: string, productType: string, amount: number) => {
+    consume = async (deviceID: string, productType: string, amount: number) => {
         try {
-            const device: Device = await this.getDeviceById(deviceId);
+            const device: Device = await this.getDeviceById(deviceID);
             const updatedAmount = device[productType] - amount;
             this.checkStock(updatedAmount);
-            return await this.prisma.device.update({
-                where: { deviceID: deviceId },
-                data: {
-                    [productType]: {
-                        set: updatedAmount,
-                    },
-                },
-            });
+            return this.updateProductStock(deviceID, productType, {
+                set: updatedAmount,
+            } as UpdateDataDto);
         } catch (e) {
             if (e instanceof ForbiddenException) {
                 throw e;
@@ -44,37 +39,51 @@ export class DeviceService {
     };
 
     order = async (deviceId: string, productType: string, vendorId: string) => {
-        const orderAmount = this.config.get('ORDER_AMOUNT');
+        const orderAmount: number = parseInt(
+            this.config.get('ORDER_AMOUNT'),
+            10,
+        );
         try {
-            if (vendorId) {
-                await this.vendorService.updateProductStock(
-                    vendorId,
+            return await this.prisma.$transaction(async () => {
+                if (vendorId) {
+                    await this.vendor.updateProductStock(
+                        vendorId,
+                        productType,
+                        orderAmount,
+                    );
+                }
+                const device: Device = await this.updateProductStock(
+                    deviceId,
                     productType,
-                    orderAmount,
+                    {
+                        increment: orderAmount,
+                    } as UpdateDataDto,
                 );
-            }
-            await this.updateProductStock(deviceId, productType, orderAmount);
+                return device;
+            });
         } catch (e) {
-            throw new ForbiddenException('Order is failed.');
+            if (e instanceof ForbiddenException) {
+                throw e;
+            } else {
+                throw new ForbiddenException('Order is failed.');
+            }
         }
     };
 
     updateProductStock = async (
         deviceID: string,
         productType: string,
-        amount: number,
+        updatedData: UpdateDataDto,
     ) => {
         try {
             return await this.prisma.device.update({
                 where: { deviceID },
                 data: {
-                    [productType]: {
-                        increase: amount,
-                    },
+                    [productType]: updatedData,
                 },
             });
         } catch (e) {
-            throw new ForbiddenException('Order is failed.');
+            throw new ForbiddenException('Stock update is failed.');
         }
     };
 
