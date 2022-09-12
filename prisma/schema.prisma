@@ -1,6 +1,3 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
 generator client {
   provider = "prisma-client-js"
 }
@@ -18,4 +15,14 @@ model Device {
   deviceID         String @unique
   softenerAmount   Int
   detergentAmount  Int
+}
+
+model Vendor {
+  id        Int   @id @default(autoincrement())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  vendorID         String @unique
+  softenerAmount   Int @default(5000)
+  detergentAmount  Int @default(5000)
 }

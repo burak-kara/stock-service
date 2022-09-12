@@ -7,6 +7,7 @@ export class ConsumeParam {
         parseInt(process.env.MAX_DEVICE_ID_LENGTH, 10) || 40,
     )
     deviceId: string;
+
     @IsNotEmpty()
     @IsEnum(['softener', 'detergent'])
     productType: string;
