@@ -20,6 +20,7 @@ export class DeviceService {
                 set: updatedAmount,
             } as UpdateDataDto);
             this.logger.debug(`Device with ID: ${updatedDevice.id} consumed ${amount} ${productType}`);
+            this.logCriticalStock(updatedDevice);
             return updatedDevice;
         } catch (e) {
             this.logger.error(e);
@@ -43,7 +44,7 @@ export class DeviceService {
     };
 
     order = async (deviceId: string, productType: string, vendorId: string) => {
-        const orderAmount: number = parseInt(this.config.get('ORDER_AMOUNT'), 10);
+        const orderAmount: number = parseInt(this.config.get('orderAmount'), 10);
         try {
             const updatedDevice: Device = await this.prisma.$transaction(async () => {
                 if (vendorId) {
@@ -93,6 +94,18 @@ export class DeviceService {
     private checkStock = (updatedAmount: number) => {
         if (updatedAmount < 0) {
             throw new ForbiddenException('Not enough product to consume.');
+        }
+    };
+
+    private logCriticalStock = (device: Device) => {
+        if (
+            device.softener < this.config.get('softenerThreshold') ||
+            device.detergent < this.config.get('detergentThreshold')
+        ) {
+            this.logger.debug(`Device with ID: ${device.id} has critical stock`);
+            this.logger.warn(
+                `Device ID: ${device.id} Softener: ${device.softener} Detergent: ${device.detergent} Timestamp: ${device.updatedAt}`,
+            );
         }
     };
 }

@@ -12,4 +12,6 @@ export default () => ({
     minProductIdLength: parseInt(process.env.MIN_PRODUCT_ID_LENGTH, 10) || 1,
     maxProductIdeLength: parseInt(process.env.MAX_PRODUCT_ID_LENGTH, 10) || 40,
     orderAmount: parseInt(process.env.ORDER_AMOUNT, 10) || 500,
+    softenerThreshold: parseInt(process.env.SOFTENER_THRESHOLD, 10) || 140,
+    detergentThreshold: parseInt(process.env.DETERGENT_THRESHOLD, 10) || 200,
 });
