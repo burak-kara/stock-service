@@ -5,17 +5,12 @@ service: serverless-stock-service
 useDotenv: true
 
 plugins:
-  - '@hewmen/serverless-plugin-typescript'
   - 'serverless-plugin-typescript'
   - serverless-plugin-optimize
   - serverless-offline
   - serverless-plugin-common-excludes
   - serverless-plugin-include-dependencies
   - serverless-plugin-warmup
-
-#package:
-#  patterns:
-#    - '!node_modules/**'
 
 package:
   individually: true

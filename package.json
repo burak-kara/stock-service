@@ -15,7 +15,7 @@
     "db:test:up": "docker compose up test-db -d",
     "db:test:restart": "yarn db:test:rm && yarn db:test:up && sleep 1 && yarn prisma:test:deploy",
     "prebuild": "rimraf dist",
-    "build": "nest build --webpack",
+    "build": "nest build",
     "format": "prettier --write \"src/**/*.ts\" \"test/**/*.ts\"",
     "start": "nest start",
     "start:dev": "nest start --watch",
@@ -44,11 +44,9 @@
     "prisma": "^4.3.1",
     "reflect-metadata": "^0.1.13",
     "rimraf": "^3.0.2",
-    "rxjs": "^7.2.0",
-    "terser-webpack-plugin": "^5.3.6"
+    "rxjs": "^7.2.0"
   },
   "devDependencies": {
-    "@hewmen/serverless-plugin-typescript": "^1.1.17",
     "@nestjs/cli": "^9.0.0",
     "@nestjs/schematics": "^9.0.0",
     "@nestjs/testing": "^9.0.0",
@@ -71,7 +69,7 @@
     "serverless-plugin-common-excludes": "^4.0.0",
     "serverless-plugin-include-dependencies": "^5.0.0",
     "serverless-plugin-optimize": "^4.2.1-rc.1",
-    "serverless-plugin-typescript": "^2.1.2",
+    "serverless-plugin-typescript": "^1.1.7",
     "serverless-plugin-warmup": "^8.0.0",
     "source-map-support": "^0.5.20",
     "supertest": "^6.1.3",
