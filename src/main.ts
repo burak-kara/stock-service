@@ -5,7 +5,10 @@ import { AppModule } from './app/app.module';
 import helmet from 'helmet';
 
 async function bootstrap() {
-    const app = await NestFactory.create(AppModule, { cors: true });
+    const app = await NestFactory.create(AppModule, {
+        cors: true,
+        logger: ['error', 'warn', 'debug', 'log'],
+    });
 
     // Request Validation
     app.useGlobalPipes(
@@ -30,8 +33,13 @@ async function bootstrap() {
     app.use(helmet());
     // Swagger API Documentation
     const options = new DocumentBuilder()
-        .setTitle('REST API')
-        .setDescription('REST API description')
+        .setTitle('Stock Service REST API')
+        .setDescription(
+            'This designed endpoint will be used\n' +
+                'by a portal. With this portal, the behavior of the device will be simulated. The stock status of the\n' +
+                'detergent and softener in the devices will be monitored and the necessary inventory\n' +
+                'decrease/increase will be ensured.',
+        )
         .setVersion('0.1.0')
         .addBearerAuth()
         .build();
