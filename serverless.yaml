@@ -1,15 +1,30 @@
+org: kibitzer
+app: serverless-stock-service
 service: serverless-stock-service
 
 useDotenv: true
 
 plugins:
+  - '@hewmen/serverless-plugin-typescript'
   - 'serverless-plugin-typescript'
   - serverless-plugin-optimize
   - serverless-offline
+  - serverless-plugin-common-excludes
+  - serverless-plugin-include-dependencies
+  - serverless-plugin-warmup
+
+#package:
+#  patterns:
+#    - '!node_modules/**'
+
+package:
+  individually: true
 
 provider:
   name: aws
   runtime: nodejs16.x
+  region: us-east-1
+
   environment:
     DATABASE_URL: ${env:DATABASE_URL}
 
@@ -28,13 +43,9 @@ provider:
     SOFTENER_THRESHOLD: ${env:SOFTENER_THRESHOLD}
     DETERGENT_THRESHOLD: ${env:DETERGENT_THRESHOLD}
 
-    AWS_ACCESS_KEY_ID: ${env:AWS_ACCESS_KEY_ID}
-    AWS_SECRET_ACCESS_KEY: ${env:AWS_SECRET_ACCESS_KEY}
-    AWS_REGION: ${env:AWS_REGION}
-
 functions:
   api:
-    handler: dist/lambda.handler
+    handler: src/lambda.handler
     events:
       - http:
           method: any
