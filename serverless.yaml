@@ -1,0 +1,41 @@
+service: serverless-stock-service
+
+useDotenv: true
+
+plugins:
+  - 'serverless-plugin-typescript'
+  - serverless-plugin-optimize
+  - serverless-offline
+
+provider:
+  name: aws
+  runtime: nodejs16.x
+  environment:
+    DATABASE_URL: ${env:DATABASE_URL}
+
+    HOST: ${env:HOST}
+    PORT: ${env:PORT}
+
+    MIN_DEVICE_ID_LENGTH: ${env:MIN_DEVICE_ID_LENGTH}
+    MAX_DEVICE_ID_LENGTH: ${env:MAX_DEVICE_ID_LENGTH}
+    MIN_AMOUNT: ${env:MIN_AMOUNT}
+    MAX_AMOUNT: ${env:MAX_AMOUNT}
+    MIN_VENDOR_ID_LENGTH: ${env:MIN_VENDOR_ID_LENGTH}
+    MAX_VENDOR_ID_LENGTH: ${env:MAX_VENDOR_ID_LENGTH}
+    MIN_PRODUCT_ID_LENGTH: ${env:MIN_PRODUCT_ID_LENGTH}
+    MAX_PRODUCT_ID_LENGTH: ${env:MAX_PRODUCT_ID_LENGTH}
+    ORDER_AMOUNT: ${env:ORDER_AMOUNT}
+    SOFTENER_THRESHOLD: ${env:SOFTENER_THRESHOLD}
+    DETERGENT_THRESHOLD: ${env:DETERGENT_THRESHOLD}
+
+    AWS_ACCESS_KEY_ID: ${env:AWS_ACCESS_KEY_ID}
+    AWS_SECRET_ACCESS_KEY: ${env:AWS_SECRET_ACCESS_KEY}
+    AWS_REGION: ${env:AWS_REGION}
+
+functions:
+  api:
+    handler: dist/lambda.handler
+    events:
+      - http:
+          method: any
+          path: /{any+}
