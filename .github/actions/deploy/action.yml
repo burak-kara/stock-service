@@ -76,10 +76,18 @@ runs:
       with:
         install: true
 
-    - name: Docker Build
-      shell: bash
-      run: |
-        docker build .
+    #    - name: Docker Build
+    #      shell: bash
+    #      run: |
+    #        docker build .
+    #      env:
+    #        DATABASE_URL: ${{ inputs.database-url }}
+
+    - name: Build and push
+      uses: docker/build-push-action@v3
+      with:
+        push: true
+        tags: user/app:latest
       env:
         DATABASE_URL: ${{ inputs.database-url }}
 
