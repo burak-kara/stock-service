@@ -81,15 +81,15 @@ runs:
     #      run: |
     #        docker buildx install
 
-    - name: Install yarn
-      shell: bash
-      run: |
-        npm install -g yarn
-
     - name: Install Serverless
       shell: bash
       run: |
-        yarn global add serverless
+        yarn global add serverless@3.2.0
+
+    - name: Install dependencies
+      shell: bash
+      run: |
+        yarn install
 
     #    - name: Configure AWS credentials
     #      uses: aws-actions/configure-aws-credentials@v1
