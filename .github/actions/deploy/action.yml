@@ -84,7 +84,7 @@ runs:
     - name: Serverless Deploy
       uses: serverless/github-action@v3.1
       with:
-        args: -c "serverless plugin install --name serverless-offline && serverless deploy --stage production"
+        args: -c "serverless plugin install --name serverless-offline && serverless deploy"
         entrypoint: /bin/sh
       env:
         DATABASE_URL: ${{ inputs.database-url }}
