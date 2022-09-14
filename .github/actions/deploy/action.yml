@@ -83,6 +83,11 @@ runs:
       env:
         DATABASE_URL: ${{ inputs.database-url }}
 
+    - name: Docker test
+      shell: bash
+      run: |
+        docker --version
+
     - name: Serverless Deploy
       uses: serverless/github-action@v3.1
       with:
