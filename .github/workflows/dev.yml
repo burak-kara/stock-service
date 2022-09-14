@@ -26,6 +26,7 @@ jobs:
         uses: ./.github/actions/test
         with:
           branch-name: '${{ steps.branch-name.outputs.current_branch }}'
+          database-url: ${{ secrets.DATABASE_URL }}
           slack-web-hook: ${{ secrets.SLACK_WEBHOOK }}
           slack-channel-name: ${{ secrets.CHANNEL_NAME }}
 
@@ -50,6 +51,7 @@ jobs:
         uses: ./.github/actions/build
         with:
           branch-name: '${{ steps.branch-name.outputs.current_branch }}'
+          database-url: ${{ secrets.DATABASE_URL }}
           slack-web-hook: ${{ secrets.SLACK_WEBHOOK }}
           slack-channel-name: ${{ secrets.CHANNEL_NAME }}
 

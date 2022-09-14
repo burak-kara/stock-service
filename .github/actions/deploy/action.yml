@@ -8,14 +8,17 @@ inputs:
   branch-name:
     description: 'Branch name'
     required: true
+  database-url:
+    description: 'Database URL'
+    required: true
+  serverless-access-key:
+    description: 'Serverless Access Key'
+    required: true
   slack-web-hook:
     description: 'Slack WebHook URL'
     required: true
   slack-channel-name:
     description: 'Slack channel name'
-    required: true
-  serverless-access-key:
-    description: 'Serverless Access Key'
     required: true
 
 runs:
@@ -36,12 +39,15 @@ runs:
       shell: bash
       run: |
         docker build .
+      env:
+        DATABASE_URL: ${{ inputs.database-url }}
 
     - name: Serverless Deploy
       uses: serverless/github-action@v3.1
       with:
         args: deploy --stage production
       env:
+        DATABASE_URL: ${{ inputs.database-url }}
         SERVERLESS_ACCESS_KEY: ${{ inputs.serverless-access-key }}
 
     - name: Notify Slack on Success

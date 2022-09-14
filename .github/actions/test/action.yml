@@ -8,6 +8,9 @@ inputs:
   branch-name:
     description: 'Branch name'
     required: true
+  database-url:
+    description: 'Database URL'
+    required: true
   slack-web-hook:
     description: 'Slack WebHook URL'
     required: true
@@ -33,6 +36,7 @@ runs:
       run: yarn test
       env:
         CI: true
+        DATABASE_URL: ${{ inputs.database-url }}
 
     - name: Notify Slack on Success
       if: ${{ success() }}
