@@ -75,7 +75,8 @@ You can also find it in the AWS console.
 This step uses the AWS CLI and [Serverless Framework](https://www.serverless.com/).
 
 ```bash
+$ yarn install
 $ docker build .
-$ serverless deploy
+$ serverless deploy --stage production
 ```
 
