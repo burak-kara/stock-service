@@ -20,6 +20,45 @@ inputs:
   slack-channel-name:
     description: 'Slack channel name'
     required: true
+  host:
+    description: 'HOST'
+    required: true
+  port:
+    description: 'PORT'
+    required: true
+  min-device-id-length:
+    description: 'Min device ID length'
+    required: true
+  max-device-id-length:
+    description: 'Max device ID length'
+    required: true
+  min-amount:
+    description: 'Min amount'
+    required: true
+  max-amount:
+    description: 'Max amount'
+    required: true
+  min-vendor-id-length:
+    description: 'Min vendor ID length'
+    required: true
+  max-vendor-id-length:
+    description: 'Max vendor ID length'
+    required: true
+  min-product-id-length:
+    description: 'Min product ID length'
+    required: true
+  max-product-id-length:
+    description: 'Max product ID length'
+    required: true
+  order-amount:
+    description: 'Order amount'
+    required: true
+  softener-threshold:
+    description: 'Softener threshold'
+    required: true
+  detergent-threshold:
+    description: 'Detergent threshold'
+    required: true
 
 runs:
   using: 'composite'
@@ -48,6 +87,21 @@ runs:
         args: deploy --stage production
       env:
         DATABASE_URL: ${{ inputs.database-url }}
+        HOST: ${{ inputs.host }}
+        PORT: ${{ inputs.port }}
+
+        MIN_DEVICE_ID_LENGTH: ${{ inputs.min-device-id-length }}
+        MAX_DEVICE_ID_LENGTH: ${{ inputs.max-device-id-length }}
+        MIN_AMOUNT: ${{ inputs.min-amount }}
+        MAX_AMOUNT: ${{ inputs.max-amount }}
+        MIN_VENDOR_ID_LENGTH: ${{ inputs.min-vendor-id-length }}
+        MAX_VENDOR_ID_LENGTH: ${{ inputs.max-vendor-id-length }}
+        MIN_PRODUCT_ID_LENGTH: ${{ inputs.min-product-id-length }}
+        MAX_PRODUCT_ID_LENGTH: ${{ inputs.max-product-id-length }} }
+        ORDER_AMOUNT: ${{ inputs.order-amount }}
+        SOFTENER_THRESHOLD: ${{ inputs.softener-threshold }}
+        DETERGENT_THRESHOLD: ${{ inputs.detergent-threshold }}
+
         SERVERLESS_ACCESS_KEY: ${{ inputs.serverless-access-key }}
 
     - name: Notify Slack on Success
