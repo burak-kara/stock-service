@@ -76,25 +76,10 @@ runs:
       with:
         install: true
 
-    #    - name: Docker Build
-    #      shell: bash
-    #      run: |
-    #        docker build .
-    #      env:
-    #        DATABASE_URL: ${{ inputs.database-url }}
-
-    - name: Build and push
-      uses: docker/build-push-action@v3
-      with:
-        push: true
-        tags: user/app:latest
-      env:
-        DATABASE_URL: ${{ inputs.database-url }}
-
-    - name: Docker test
+    - name: Set up Docker Buildx
       shell: bash
       run: |
-        docker --version
+        docker buildx install
 
     - name: Serverless Deploy
       uses: serverless/github-action@v3.1

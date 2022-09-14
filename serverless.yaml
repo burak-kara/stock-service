@@ -14,7 +14,7 @@ provider:
   name: aws
   runtime: nodejs16.x
   region: us-east-1
-  stage: dev
+  stage: prod
   profile: lambda-docker
   ecr:
     images:
