@@ -57,8 +57,8 @@ runs:
         action-status: ${{ job.status }}
         slack-web-hook: ${{ inputs.slack-web-hook }}
         slack-channel-name: ${{ inputs.slack-channel-name }}
-        title: 'Build Success :pass:'
-        message: 'Build on ${{ inputs.branch-name }} succeeded :pass: :fireparrot: :sheepy:'
+        title: 'Deploy Success :pass:'
+        message: 'Deploy on ${{ inputs.branch-name }} succeeded :pass: :fireparrot: :sheepy:'
 
     - name: Notify Slack on Failure
       if: ${{ failure() }}
@@ -67,5 +67,5 @@ runs:
         action-status: ${{ job.status }}
         slack-web-hook: ${{ inputs.slack-web-hook }}
         slack-channel-name: ${{ inputs.slack-channel-name }}
-        title: 'Build Failed :fail:'
-        message: 'Build on ${{ inputs.branch-name }} failed :fail: :terror: :alert:'
+        title: 'Deploy Failed :fail:'
+        message: 'Deploy on ${{ inputs.branch-name }} failed :fail: :terror: :alert:'
