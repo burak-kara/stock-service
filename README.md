@@ -1,6 +1,7 @@
 ## Deployed lambda
 
-https://xzga06cec2.execute-api.us-east-1.amazonaws.com/dev/api
+- Development: https://xzga06cec2.execute-api.us-east-1.amazonaws.com/dev/api
+- Production: https://cm03w2x3e8.execute-api.us-east-1.amazonaws.com/production/api
 
 ## Description
 
@@ -75,7 +76,8 @@ You can also find it in the AWS console.
 This step uses the AWS CLI and [Serverless Framework](https://www.serverless.com/).
 
 ```bash
+$ yarn install
 $ docker build .
-$ serverless deploy
+$ serverless deploy --stage production
 ```
 

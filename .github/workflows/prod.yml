@@ -26,6 +26,7 @@ jobs:
         uses: ./.github/actions/test
         with:
           branch-name: '${{ steps.branch-name.outputs.current_branch }}'
+          database-url: ${{ secrets.DATABASE_URL }}
           slack-web-hook: ${{ secrets.SLACK_WEBHOOK }}
           slack-channel-name: ${{ secrets.CHANNEL_NAME }}
 
@@ -50,5 +51,46 @@ jobs:
         uses: ./.github/actions/build
         with:
           branch-name: '${{ steps.branch-name.outputs.current_branch }}'
+          database-url: ${{ secrets.DATABASE_URL }}
           slack-web-hook: ${{ secrets.SLACK_WEBHOOK }}
           slack-channel-name: ${{ secrets.CHANNEL_NAME }}
+
+  deploy:
+    name: Deploy
+    needs: build
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        node-version: [ 16.x ]
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+
+      - name: Get branch name
+        id: branch-name
+        uses: tj-actions/branch-names@v6
+
+      - name: Deploy
+        uses: ./.github/actions/deploy
+        with:
+          branch-name: '${{ steps.branch-name.outputs.current_branch }}'
+          database-url: ${{ secrets.DATABASE_URL }}
+          serverless-access-key: ${{ secrets.SERVERLESS_ACCESS_KEY }}
+          slack-web-hook: ${{ secrets.SLACK_WEBHOOK }}
+          slack-channel-name: ${{ secrets.CHANNEL_NAME }}
+          host: ${{ secrets.HOST }}
+          port: ${{ secrets.PORT }}
+          min-device-id-length: ${{ secrets.MIN_DEVICE_ID_LENGTH }}
+          max-device-id-length: ${{ secrets.MAX_DEVICE_ID_LENGTH }}
+          min-amount: ${{ secrets.MIN_AMOUNT }}
+          max-amount: ${{ secrets.MAX_AMOUNT }}
+          min-vendor-id-length: ${{ secrets.MIN_VENDOR_ID_LENGTH }}
+          max-vendor-id-length: ${{ secrets.MAX_VENDOR_ID_LENGTH }}
+          min-product-id-length: ${{ secrets.MIN_PRODUCT_ID_LENGTH }}
+          max-product-id-length: ${{ secrets.MAX_PRODUCT_ID_LENGTH }}
+          order-amount: ${{ secrets.ORDER_AMOUNT }}
+          softener-threshold: ${{ secrets.SOFTENER_THRESHOLD }}
+          detergent-threshold: ${{ secrets.DETERGENT_THRESHOLD }}
