@@ -1,15 +1,26 @@
+org: kibitzer
+app: serverless-stock-service
 service: serverless-stock-service
 
 useDotenv: true
 
 plugins:
-  - 'serverless-plugin-typescript'
-  - serverless-plugin-optimize
   - serverless-offline
+
+package:
+  individually: true
 
 provider:
   name: aws
   runtime: nodejs16.x
+  region: us-east-1
+  stage: dev
+  profile: lambda-docker
+  ecr:
+    images:
+      appimage:
+        path: ./
+
   environment:
     DATABASE_URL: ${env:DATABASE_URL}
 
@@ -28,13 +39,14 @@ provider:
     SOFTENER_THRESHOLD: ${env:SOFTENER_THRESHOLD}
     DETERGENT_THRESHOLD: ${env:DETERGENT_THRESHOLD}
 
-    AWS_ACCESS_KEY_ID: ${env:AWS_ACCESS_KEY_ID}
-    AWS_SECRET_ACCESS_KEY: ${env:AWS_SECRET_ACCESS_KEY}
-    AWS_REGION: ${env:AWS_REGION}
-
 functions:
   api:
-    handler: dist/lambda.handler
+    image:
+      name: appimage
+      command:
+        - dist/lambda.handler
+      entryPoint:
+        - '/lambda-entrypoint.sh'
     events:
       - http:
           method: any
