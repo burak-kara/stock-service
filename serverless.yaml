@@ -5,12 +5,7 @@ service: serverless-stock-service
 useDotenv: true
 
 plugins:
-  - 'serverless-plugin-typescript'
-  - serverless-plugin-optimize
   - serverless-offline
-  - serverless-plugin-common-excludes
-  - serverless-plugin-include-dependencies
-  - serverless-plugin-warmup
 
 package:
   individually: true
@@ -19,6 +14,12 @@ provider:
   name: aws
   runtime: nodejs16.x
   region: us-east-1
+  stage: dev
+  profile: lambda-docker
+  ecr:
+    images:
+      appimage:
+        path: ./
 
   environment:
     DATABASE_URL: ${env:DATABASE_URL}
@@ -40,7 +41,12 @@ provider:
 
 functions:
   api:
-    handler: src/lambda.handler
+    image:
+      name: appimage
+      command:
+        - dist/lambda.handler
+      entryPoint:
+        - '/lambda-entrypoint.sh'
     events:
       - http:
           method: any
