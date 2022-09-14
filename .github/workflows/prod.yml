@@ -57,7 +57,7 @@ jobs:
 
   deploy:
     name: Deploy
-    needs: build
+    #    needs: build
     runs-on: ubuntu-latest
     strategy:
       matrix:
