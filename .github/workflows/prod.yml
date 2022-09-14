@@ -69,6 +69,10 @@ jobs:
         with:
           fetch-depth: 0
 
+      - name: Get branch name
+        id: branch-name
+        uses: tj-actions/branch-names@v6
+
       - name: Deploy
         uses: ./.github/actions/deploy
         with:
