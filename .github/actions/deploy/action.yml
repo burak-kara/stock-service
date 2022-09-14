@@ -80,29 +80,29 @@ runs:
       env:
         DATABASE_URL: ${{ inputs.database-url }}
 
-    - name: Serverless Deploy
-      uses: serverless/github-action@v3.1
-      with:
-        args: -c "serverless plugin install --name serverless-offline && serverless deploy"
-        entrypoint: /bin/sh
-      env:
-        DATABASE_URL: ${{ inputs.database-url }}
-        HOST: ${{ inputs.host }}
-        PORT: ${{ inputs.port }}
-
-        MIN_DEVICE_ID_LENGTH: ${{ inputs.min-device-id-length }}
-        MAX_DEVICE_ID_LENGTH: ${{ inputs.max-device-id-length }}
-        MIN_AMOUNT: ${{ inputs.min-amount }}
-        MAX_AMOUNT: ${{ inputs.max-amount }}
-        MIN_VENDOR_ID_LENGTH: ${{ inputs.min-vendor-id-length }}
-        MAX_VENDOR_ID_LENGTH: ${{ inputs.max-vendor-id-length }}
-        MIN_PRODUCT_ID_LENGTH: ${{ inputs.min-product-id-length }}
-        MAX_PRODUCT_ID_LENGTH: ${{ inputs.max-product-id-length }} }
-        ORDER_AMOUNT: ${{ inputs.order-amount }}
-        SOFTENER_THRESHOLD: ${{ inputs.softener-threshold }}
-        DETERGENT_THRESHOLD: ${{ inputs.detergent-threshold }}
-
-        SERVERLESS_ACCESS_KEY: ${{ inputs.serverless-access-key }}
+    #    - name: Serverless Deploy
+    #      uses: serverless/github-action@v3.1
+    #      with:
+    #        args: -c "serverless plugin install --name serverless-offline && serverless deploy"
+    #        entrypoint: /bin/sh
+    #      env:
+    #        DATABASE_URL: ${{ inputs.database-url }}
+    #        HOST: ${{ inputs.host }}
+    #        PORT: ${{ inputs.port }}
+    #
+    #        MIN_DEVICE_ID_LENGTH: ${{ inputs.min-device-id-length }}
+    #        MAX_DEVICE_ID_LENGTH: ${{ inputs.max-device-id-length }}
+    #        MIN_AMOUNT: ${{ inputs.min-amount }}
+    #        MAX_AMOUNT: ${{ inputs.max-amount }}
+    #        MIN_VENDOR_ID_LENGTH: ${{ inputs.min-vendor-id-length }}
+    #        MAX_VENDOR_ID_LENGTH: ${{ inputs.max-vendor-id-length }}
+    #        MIN_PRODUCT_ID_LENGTH: ${{ inputs.min-product-id-length }}
+    #        MAX_PRODUCT_ID_LENGTH: ${{ inputs.max-product-id-length }} }
+    #        ORDER_AMOUNT: ${{ inputs.order-amount }}
+    #        SOFTENER_THRESHOLD: ${{ inputs.softener-threshold }}
+    #        DETERGENT_THRESHOLD: ${{ inputs.detergent-threshold }}
+    #
+    #        SERVERLESS_ACCESS_KEY: ${{ inputs.serverless-access-key }}
 
     - name: Notify Slack on Success
       if: ${{ success() }}
