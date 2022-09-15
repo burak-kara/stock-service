@@ -42,16 +42,6 @@ export class DeviceController {
         return this.deviceService.order(params.deviceId, productType, query.vendorId);
     }
 
-    @Post('create')
-    @ApiOperation({
-        summary: 'Create a new device',
-    })
-    @ApiCreatedResponse({ description: 'Device is created successfully.' })
-    @ApiBadRequestResponse({ description: 'Bad request.' })
-    async create(@Body() body: NewDeviceDto) {
-        return this.deviceService.create(body);
-    }
-
     @Get('get/all')
     @ApiOperation({
         summary: 'Get all devices',
@@ -59,7 +49,7 @@ export class DeviceController {
     @ApiOkResponse({ description: 'Devices are found.' })
     @ApiNotFoundResponse({ description: 'Devices are not found.' })
     async getAll() {
-        return this.deviceService.getAllDevices();
+        return this.deviceService.getAll();
     }
 
     @Get('get/:deviceId')
@@ -69,6 +59,16 @@ export class DeviceController {
     @ApiOkResponse({ description: 'Device is found.' })
     @ApiNotFoundResponse({ description: 'Device is not found.' })
     async get(@Param() param: GetParam) {
-        return this.deviceService.getDevice(param.deviceId);
+        return this.deviceService.get(param.deviceId);
+    }
+
+    @Post('create')
+    @ApiOperation({
+        summary: 'Create a new device',
+    })
+    @ApiCreatedResponse({ description: 'Device is created successfully.' })
+    @ApiBadRequestResponse({ description: 'Bad request.' })
+    async create(@Body() body: NewDeviceDto) {
+        return this.deviceService.create(body);
     }
 }

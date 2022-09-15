@@ -12,7 +12,7 @@ It is a REST API
 ## Installation
 
 ```bash
-$ yarn add
+$ yarn install
 ```
 
 ## Running the app
@@ -46,6 +46,17 @@ $ yarn test:e2e
 
 # test coverage
 $ yarn test:cov
+```
+
+## Local
+
+- Find the local Swagger UI in http://localhost:3000/api
+- Health check in http://localhost:3000/ or http://localhost:3000/health-check
+
+#### Lambda
+
+```bash
+$ serverless offline start
 ```
 
 ## Deploy
