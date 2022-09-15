@@ -65,7 +65,7 @@ const setupSwagger = (app: INestApplication) => {
                 'detergent and softener in the devices will be monitored and the necessary inventory\n' +
                 'decrease/increase will be ensured.',
         )
-        .setVersion('0.1.0')
+        .setVersion('1.0')
         .addBearerAuth()
         .build();
     const document = SwaggerModule.createDocument(app, options);
@@ -73,8 +73,6 @@ const setupSwagger = (app: INestApplication) => {
 };
 
 export const handler: Handler = async (event: any, context: Context) => {
-    console.log('EVENT: ', JSON.stringify(event));
-    console.log('EVENT PATH: ', JSON.stringify(event.path));
     if (!cachedServer) cachedServer = await bootstrapServer();
     return proxy(cachedServer, event, context, 'PROMISE').promise;
 };
