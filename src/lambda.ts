@@ -34,7 +34,7 @@ async function bootstrapServer(): Promise<Server> {
                 transform: true,
             }),
         );
-        nestApp.setGlobalPrefix('production/api', {
+        nestApp.setGlobalPrefix('api', {
             exclude: [
                 {
                     path: '/',
@@ -73,6 +73,9 @@ const setupSwagger = (app: INestApplication) => {
 };
 
 export const handler: Handler = async (event: any, context: Context) => {
+    if (!event.path.includes('production')) {
+        event.path = '/production' + event.path;
+    }
     if (!cachedServer) cachedServer = await bootstrapServer();
     return proxy(cachedServer, event, context, 'PROMISE').promise;
 };

@@ -33,6 +33,7 @@ is [here](https://join.slack.com/t/burak-test-workspace/shared_invite/zt-1fcqtf0
 - ReactJS (Frontend)
 - TailwindCSS (Frontend)
 - SASS (Frontend)
+- Slack (Notifications)
 
 ## Installation
 
