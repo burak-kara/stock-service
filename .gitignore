@@ -39,3 +39,4 @@ lerna-debug.log*
 
 /.build
 /.serverless
+docker-compose.yml

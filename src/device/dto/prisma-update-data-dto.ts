@@ -1,4 +1,4 @@
-export interface UpdateDataDto {
+export interface PrismaUpdateDataDto {
     increment?: number;
     set?: number;
     decrement?: number;

@@ -1,6 +1,13 @@
 import { Body, Controller, Get, Param, Post, Query } from '@nestjs/common';
-import { ApiCreatedResponse, ApiNotFoundResponse, ApiOkResponse, ApiOperation, ApiTags } from '@nestjs/swagger';
-import { ConsumeParam, ConsumeQuery, DeviceDto, OrderParam, OrderQuery } from './dto';
+import {
+    ApiBadRequestResponse,
+    ApiCreatedResponse,
+    ApiNotFoundResponse,
+    ApiOkResponse,
+    ApiOperation,
+    ApiTags,
+} from '@nestjs/swagger';
+import { ConsumeParam, ConsumeQuery, GetParam, NewDeviceDto, OrderParam, OrderQuery } from './dto';
 import { DeviceService } from './device.service';
 
 @ApiTags('Device')
@@ -40,7 +47,28 @@ export class DeviceController {
         summary: 'Create a new device',
     })
     @ApiCreatedResponse({ description: 'Device is created successfully.' })
-    async create(@Body() body: DeviceDto) {
+    @ApiBadRequestResponse({ description: 'Bad request.' })
+    async create(@Body() body: NewDeviceDto) {
         return this.deviceService.create(body);
+    }
+
+    @Get('get/all')
+    @ApiOperation({
+        summary: 'Get all devices',
+    })
+    @ApiOkResponse({ description: 'Devices are found.' })
+    @ApiNotFoundResponse({ description: 'Devices are not found.' })
+    async getAll() {
+        return this.deviceService.getAllDevices();
+    }
+
+    @Get('get/:deviceId')
+    @ApiOperation({
+        summary: 'Get device by id',
+    })
+    @ApiOkResponse({ description: 'Device is found.' })
+    @ApiNotFoundResponse({ description: 'Device is not found.' })
+    async get(@Param() param: GetParam) {
+        return this.deviceService.getDevice(param.deviceId);
     }
 }

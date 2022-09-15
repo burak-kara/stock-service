@@ -1,44 +1,76 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import { INestApplication } from '@nestjs/common';
-import { DeviceModule } from '../../src/device/device.module';
-import * as request from 'supertest';
-import { DeviceService } from '../../src/device/device.service';
+import { INestApplication, ValidationPipe } from '@nestjs/common';
+import { AppModule } from '../../src/app/app.module';
+import { NewDeviceDto } from '../../src/device/dto';
+import request from 'supertest';
 
 describe('DeviceController (e2e)', () => {
     let app: INestApplication;
-    let deviceService = {
-        create: () => ({
-            id: 1,
-            createdAt: '2022-09-12T10:16:24.105Z',
-            updatedAt: '2022-09-12T10:16:24.106Z',
-            deviceID: 'WMLTDEC00100',
-            softenerAmount: 1000,
-            detergentAmount: 1000,
-        }),
-    };
 
     beforeEach(async () => {
         const moduleFixture: TestingModule = await Test.createTestingModule({
-            imports: [DeviceModule],
-        })
-            .overrideProvider(DeviceService)
-            .useValue(deviceService)
-            .compile();
+            imports: [AppModule],
+        }).compile();
 
         app = moduleFixture.createNestApplication();
+        app.useGlobalPipes(
+            new ValidationPipe({
+                whitelist: true,
+                transform: true,
+            }),
+        );
         await app.init();
     });
 
-    it('/api/device/create (POST)', () => {
-        return request(app.getHttpServer())
-            .post('/api/device/create')
-            .send({
-                deviceID: 'WMLTDEC00100',
-                softenerAmount: 1000,
-                detergentAmount: 1000,
-            })
-            .expect(201)
-            .expect('Moved Permanently. Redirecting to health-check');
+    describe('/api/device/create (POST)', () => {
+        it('should create a device', async () => {
+            return await request(app.getHttpServer())
+                .post('/device/create')
+                .send({
+                    deviceID: 'WMLTDEC001000',
+                    softener: 1000,
+                    detergent: 1000,
+                } as unknown as NewDeviceDto)
+                .expect(201);
+        });
+
+        it('should give 403 for the duplicate device', async () => {
+            return await request(app.getHttpServer())
+                .post('/device/create')
+                .send({
+                    deviceID: 'WMLTDEC001000',
+                    softener: 1000,
+                    detergent: 1000,
+                } as unknown as NewDeviceDto)
+                .expect(403);
+        });
+
+        it('should give 403 for the missing field', async () => {
+            const { status, body } = await request(app.getHttpServer())
+                .post('/device/create')
+                .send({
+                    deviceID: 'WMLTDEC007000',
+                    detergent: 1000,
+                } as unknown as NewDeviceDto);
+            expect(status).toEqual(400);
+            expect(body.message[1]).toEqual('softener should not be empty');
+        });
+
+        it('should create object without the extra field', async () => {
+            const { status, body } = await request(app.getHttpServer())
+                .post('/device/create')
+                .send({
+                    deviceID: 'WMLTDEC00500',
+                    softener: 1000,
+                    detergent: 1000,
+                    test: 1000,
+                } as unknown as NewDeviceDto);
+            expect(status).toEqual(201);
+            expect(body).not.toHaveProperty('test');
+            expect(body).toHaveProperty('deviceID');
+            expect(body).toHaveProperty('softener');
+            expect(body).toHaveProperty('detergent');
+        });
     });
 
     afterAll(async () => {

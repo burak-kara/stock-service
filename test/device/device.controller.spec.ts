@@ -1,86 +1,140 @@
-import { Test, TestingModule } from '@nestjs/testing';
+import { Test } from '@nestjs/testing';
+import { ConfigService } from '@nestjs/config';
+import { ConsumeParam, ConsumeQuery, GetDeviceDto, NewDeviceDto, OrderParam, OrderQuery } from '../../src/device/dto';
 import { DeviceController } from '../../src/device/device.controller';
 import { PrismaService } from '../../src/prisma/prisma.service';
-import { ConsumeParam, ConsumeQuery, DeviceDto } from '../../src/device/dto';
+import { DeviceService } from '../../src/device/device.service';
+import { VendorService } from '../../src/vendor/vendor.service';
+import { Device } from '@prisma/client';
 
 describe('DeviceController', () => {
     let deviceController: DeviceController;
-
-    const mockPrisma = {
-        device: {
-            create: () =>
-                Promise.resolve({
-                    id: 1,
-                    createdAt: '2022-09-12T10:16:24.105Z',
-                    updatedAt: '2022-09-12T10:16:24.106Z',
-                    deviceID: 'WMLTDEC00100',
-                    softener: 1000,
-                    detergent: 1000,
-                }),
-            findUnique: () =>
-                Promise.resolve({
-                    id: 1,
-                    createdAt: '2022-09-12T07:35:49.759Z',
-                    updatedAt: '2022-09-12T09:54:55.331Z',
-                    deviceID: 'WMLTDEC00200',
-                    softener: 1000,
-                    detergent: 1000,
-                }),
-        },
-    };
+    let deviceService: DeviceService;
 
     beforeEach(async () => {
-        const app: TestingModule = await Test.createTestingModule({
+        const moduleRef = await Test.createTestingModule({
             controllers: [DeviceController],
-            providers: [PrismaService],
-        })
-            .overrideProvider(PrismaService)
-            .useValue(mockPrisma)
-            .compile();
+            providers: [DeviceService, ConfigService, PrismaService, VendorService],
+        }).compile();
 
-        deviceController = app.get<DeviceController>(DeviceController);
+        deviceService = moduleRef.get<DeviceService>(DeviceService);
+        deviceController = moduleRef.get<DeviceController>(DeviceController);
+    });
+
+    describe('getAll', () => {
+        it('should return an array of devices', async () => {
+            const result: GetDeviceDto[] = [
+                {
+                    deviceID: 'WMLTDEC00200',
+                    softener: 1000,
+                    detergent: 400,
+                    createdAt: '2022-09-13T10:30:01.243Z' as unknown as Date,
+                    updatedAt: '2022-09-13T22:10:50.936Z' as unknown as Date,
+                },
+                {
+                    deviceID: 'WMLTDEC00100',
+                    softener: 1000,
+                    detergent: 1448,
+                    createdAt: '2022-09-13T09:27:39.837Z' as unknown as Date,
+                    updatedAt: '2022-09-13T22:11:41.083Z' as unknown as Date,
+                },
+                {
+                    deviceID: 'WMLTDEC00500',
+                    softener: 1000,
+                    detergent: 1000,
+                    createdAt: '2022-09-13T22:21:31.535Z' as unknown as Date,
+                    updatedAt: '2022-09-13T22:21:31.536Z' as unknown as Date,
+                },
+            ];
+
+            jest.spyOn(deviceService, 'getAllDevices').mockImplementation(async () => result);
+
+            expect(await deviceController.getAll()).toMatchObject(result);
+        });
+    });
+
+    describe('getDevice', () => {
+        it('should return a device', async () => {
+            const result: GetDeviceDto = {
+                deviceID: 'WMLTDEC00200',
+                softener: 1000,
+                detergent: 400,
+                createdAt: '2022-09-13T10:30:01.243Z' as unknown as Date,
+                updatedAt: '2022-09-13T22:10:50.936Z' as unknown as Date,
+            };
+            jest.spyOn(deviceService, 'getDevice').mockImplementation(async () => result);
+
+            expect(await deviceController.get({ deviceId: 'WMLTDEC00200' })).toMatchObject(result);
+        });
     });
 
     describe('create', () => {
-        const device: DeviceDto = {
-            deviceID: 'WMLTDEC00100',
-            softener: 1000,
-            detergent: 1000,
-        };
-        it('should return a device', () => {
-            expect(deviceController.create(device)).resolves.toStrictEqual({
-                id: 1,
-                createdAt: '2022-09-12T10:16:24.105Z',
-                updatedAt: '2022-09-12T10:16:24.106Z',
-                deviceID: 'WMLTDEC00100',
+        it('should return a device', async () => {
+            const device: NewDeviceDto = {
+                deviceID: 'WMLTDEC002000',
                 softener: 1000,
                 detergent: 1000,
-            });
+            };
+            const result: Device = {
+                id: 8,
+                createdAt: '2022-09-14T20:45:46.543Z' as unknown as Date,
+                updatedAt: '2022-09-14T20:45:46.543Z' as unknown as Date,
+                deviceID: 'WMLTDEC002000',
+                softener: 1000,
+                detergent: 1000,
+            };
+
+            jest.spyOn(deviceService, 'create').mockImplementation(async () => result);
+
+            expect(await deviceController.create(device)).toStrictEqual(result);
+        });
+    });
+
+    describe('order', () => {
+        it('should order new softener and return a device', async () => {
+            const orderParam: OrderParam = {
+                deviceId: 'WMLTDEC002000',
+                productType: 'ASDJAF567-det-productId',
+            };
+            const orderQuery: OrderQuery = {
+                vendorId: '523',
+            };
+            const result: Device = {
+                id: 8,
+                createdAt: '2022-09-14T20:45:46.543Z' as unknown as Date,
+                updatedAt: '2022-09-14T20:45:46.543Z' as unknown as Date,
+                deviceID: 'WMLTDEC002000',
+                softener: 1000,
+                detergent: 990,
+            };
+
+            jest.spyOn(deviceService, 'order').mockImplementation(async () => result);
+
+            expect(await deviceController.order(orderParam, orderQuery)).toStrictEqual(result);
         });
     });
 
     describe('consume', () => {
-        it('', () => {
+        it('should consume and return a device', async () => {
             const consumeParams: ConsumeParam = {
-                deviceId: '1',
+                deviceId: 'WMLTDEC002000',
                 productType: 'softener',
             };
             const consumeQuery: ConsumeQuery = {
-                amount: 1,
+                amount: 10,
+            };
+            const result: Device = {
+                id: 8,
+                createdAt: '2022-09-14T20:45:46.543Z' as unknown as Date,
+                updatedAt: '2022-09-14T20:45:46.543Z' as unknown as Date,
+                deviceID: 'WMLTDEC002000',
+                softener: 1000,
+                detergent: 990,
             };
 
-            expect(deviceController.consume(consumeParams, consumeQuery)).toBe('Up & running');
-        });
+            jest.spyOn(deviceService, 'consume').mockImplementation(async () => result);
 
-        it('', () => {
-            const consumeParams: ConsumeParam = {
-                deviceId: '1',
-                productType: 'softener',
-            };
-            const consumeQuery: ConsumeQuery = {
-                amount: 1,
-            };
-            expect(deviceController.consume(consumeParams, consumeQuery)).toBe(void 0);
+            expect(await deviceController.consume(consumeParams, consumeQuery)).toStrictEqual(result);
         });
     });
 });
