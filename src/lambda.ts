@@ -69,7 +69,7 @@ const setupSwagger = (app: INestApplication) => {
         .addBearerAuth()
         .build();
     const document = SwaggerModule.createDocument(app, options);
-    SwaggerModule.setup('production/api', app, document);
+    SwaggerModule.setup('api', app, document);
 };
 
 export const handler: Handler = async (event: any, context: Context) => {
