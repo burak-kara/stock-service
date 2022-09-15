@@ -81,7 +81,7 @@ export class DeviceService {
         }
     };
 
-    getDevice = async (deviceID: string) => {
+    get = async (deviceID: string) => {
         try {
             const device: Device = await this.getDeviceById(deviceID);
             const deviceDto: GetDeviceDto = {
@@ -98,7 +98,7 @@ export class DeviceService {
         }
     };
 
-    getAllDevices = async () => {
+    getAll = async () => {
         try {
             const devices: GetDeviceDto[] = await this.prisma.device.findMany({
                 select: {

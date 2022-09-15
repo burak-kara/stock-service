@@ -2,7 +2,7 @@ import { ForbiddenException, Injectable, Logger } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { Vendor } from '@prisma/client';
 import { PrismaService } from '../prisma/prisma.service';
-import { VendorDto } from './dto';
+import { GetVendorDto, NewVendorDto } from './dto';
 
 @Injectable()
 export class VendorService {
@@ -10,7 +10,7 @@ export class VendorService {
 
     constructor(private config: ConfigService, private prisma: PrismaService) {}
 
-    create = async (data: VendorDto) => {
+    create = async (data: NewVendorDto) => {
         try {
             const vendor: Vendor = await this.prisma.vendor.create({ data });
             this.logger.debug(`Vendor created with ID: ${vendor.id}`);
@@ -46,7 +46,42 @@ export class VendorService {
         }
     };
 
-    getVendorById = async (vendorID: string) => {
+    get = async (vendorID: string) => {
+        try {
+            const vendor: Vendor = await this.getVendorById(vendorID);
+            const vendorDto: GetVendorDto = {
+                vendorID: vendor.vendorID,
+                softener: vendor.softener,
+                detergent: vendor.detergent,
+                createdAt: vendor.createdAt,
+                updatedAt: vendor.updatedAt,
+            };
+            this.logger.debug(`Vendor with ID: ${vendor.id} was found.`);
+            return vendorDto;
+        } catch (e) {
+            throw new ForbiddenException('Vendor is not found.');
+        }
+    };
+
+    getAll = async () => {
+        try {
+            const vendors: GetVendorDto[] = await this.prisma.vendor.findMany({
+                select: {
+                    vendorID: true,
+                    softener: true,
+                    detergent: true,
+                    createdAt: true,
+                    updatedAt: true,
+                },
+            });
+            this.logger.debug(`Vendors were found.`);
+            return vendors;
+        } catch (e) {
+            throw new ForbiddenException('Vendors are not found.');
+        }
+    };
+
+    private getVendorById = async (vendorID: string) => {
         try {
             return await this.prisma.vendor.findUnique({
                 where: { vendorID },
