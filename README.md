@@ -7,7 +7,27 @@
 
 [Nest](https://github.com/nestjs/nest) framework TypeScript repository.
 This project contains an example of a lambda function using NestJS.
-It is a REST API
+
+### Repositories:
+
+- Backend: [this repository](https://github.com/burak-kara/stock-service)
+- Frontend: [this](https://github.com/burak-kara/stock-service-db-visualizer)
+
+Both repositories are private, but you can request access from [burak.kara@ozu.edu.tr](mailto:burak.kara@ozu.edu.tr)
+Slack Workspace where all notifications sent during CI/CD
+is [here](https://join.slack.com/t/burak-test-workspace/shared_invite/zt-1fcqtf0xc-hhhXNw5ZtgCMquTqRU1sAw)
+
+## Tech Stack
+
+- NodeJS 16
+- NestJS
+- AWS Lambda
+- AWS API Gateway
+- AWS Postgres RDS
+- AWS S3
+- AWS CloudWatch
+- AWS CLoudFormation
+- GitHub Actions
 
 ## Installation
 
@@ -48,16 +68,10 @@ $ yarn test:e2e
 $ yarn test:cov
 ```
 
-## Local
+### Local Run
 
 - Find the local Swagger UI in http://localhost:3000/api
 - Health check in http://localhost:3000/ or http://localhost:3000/health-check
-
-#### Lambda
-
-```bash
-$ serverless offline start
-```
 
 ## Deploy
 
@@ -78,6 +92,13 @@ $ serverless offline start
     - Install. See [Docker docs](https://docs.docker.com/get-docker/)
     - Start Docker daemon. See [Docker docs](https://docs.docker.com/engine/reference/commandline/dockerd/)
 
+### Local Lambda
+
+```bash
+$ yarn global add serverless
+$ serverless offline start
+```
+
 ### Deploy to AWS
 
 This will deploy the lambda to AWS and create a new API Gateway endpoint.
@@ -92,3 +113,6 @@ $ docker build .
 $ serverless deploy --stage production
 ```
 
+# Issues
+
+- Cold start problem that causes the first request to take a long time
