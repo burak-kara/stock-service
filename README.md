@@ -1,6 +1,5 @@
 ## Deployed lambda
 
-- Development: https://xzga06cec2.execute-api.us-east-1.amazonaws.com/dev/api
 - Production: https://cm03w2x3e8.execute-api.us-east-1.amazonaws.com/production/api
 
 ## Description
@@ -10,8 +9,8 @@ This project contains an example of a lambda function using NestJS.
 
 ### Repositories:
 
-- Backend: [this repository](https://github.com/burak-kara/stock-service)
-- Frontend: [this](https://github.com/burak-kara/stock-service-db-visualizer)
+- Backend: [this repo](https://github.com/burak-kara/stock-service)
+- Frontend: [here](https://github.com/burak-kara/stock-service-db-visualizer)
 
 Both repositories are private, but you can request access from [burak.kara@ozu.edu.tr](mailto:burak.kara@ozu.edu.tr)
 Slack Workspace where all notifications sent during CI/CD
