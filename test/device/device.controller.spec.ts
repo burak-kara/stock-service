@@ -47,7 +47,7 @@ describe('DeviceController', () => {
                 },
             ];
 
-            jest.spyOn(deviceService, 'getAllDevices').mockImplementation(async () => result);
+            jest.spyOn(deviceService, 'getAll').mockImplementation(async () => result);
 
             expect(await deviceController.getAll()).toMatchObject(result);
         });
@@ -62,7 +62,7 @@ describe('DeviceController', () => {
                 createdAt: '2022-09-13T10:30:01.243Z' as unknown as Date,
                 updatedAt: '2022-09-13T22:10:50.936Z' as unknown as Date,
             };
-            jest.spyOn(deviceService, 'getDevice').mockImplementation(async () => result);
+            jest.spyOn(deviceService, 'get').mockImplementation(async () => result);
 
             expect(await deviceController.get({ deviceId: 'WMLTDEC00200' })).toMatchObject(result);
         });
