@@ -73,9 +73,8 @@ const setupSwagger = (app: INestApplication) => {
 };
 
 export const handler: Handler = async (event: any, context: Context) => {
-    if (!event.path.includes('production')) {
-        event.path = '/production' + event.path;
-    }
+    console.log('EVENT: ', JSON.stringify(event));
+    console.log('EVENT PATH: ', JSON.stringify(event.path));
     if (!cachedServer) cachedServer = await bootstrapServer();
     return proxy(cachedServer, event, context, 'PROMISE').promise;
 };
