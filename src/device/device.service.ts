@@ -3,7 +3,7 @@ import { Device } from '@prisma/client';
 import { ConfigService } from '@nestjs/config';
 import { PrismaService } from '../prisma/prisma.service';
 import { VendorService } from '../vendor/vendor.service';
-import { DeviceDto, UpdateDataDto } from './dto';
+import { GetDeviceDto, NewDeviceDto, PrismaUpdateDataDto } from './dto';
 
 @Injectable()
 export class DeviceService {
@@ -18,7 +18,7 @@ export class DeviceService {
             this.checkStock(updatedAmount);
             const updatedDevice: Device = await this.updateProductStock(deviceID, productType, {
                 set: updatedAmount,
-            } as UpdateDataDto);
+            } as PrismaUpdateDataDto);
             this.logger.debug(`Device with ID: ${updatedDevice.id} consumed ${amount} ${productType}`);
             this.logCriticalStock(updatedDevice);
             return updatedDevice;
@@ -32,7 +32,7 @@ export class DeviceService {
         }
     };
 
-    create = async (data: DeviceDto) => {
+    create = async (data: NewDeviceDto) => {
         try {
             const device: Device = await this.prisma.device.create({ data });
             this.logger.debug(`Device created with ID: ${device.id}`);
@@ -52,7 +52,7 @@ export class DeviceService {
                 }
                 const device: Device = await this.updateProductStock(deviceId, productType, {
                     increment: orderAmount,
-                } as UpdateDataDto);
+                } as PrismaUpdateDataDto);
                 return device;
             });
             this.logger.debug(`Device with ID: ${updatedDevice.id} increased stock by ${orderAmount} ${productType}`);
@@ -67,7 +67,7 @@ export class DeviceService {
         }
     };
 
-    updateProductStock = async (deviceID: string, productType: string, updatedData: UpdateDataDto) => {
+    updateProductStock = async (deviceID: string, productType: string, updatedData: PrismaUpdateDataDto) => {
         try {
             return await this.prisma.device.update({
                 where: { deviceID },
@@ -81,11 +81,47 @@ export class DeviceService {
         }
     };
 
-    getDeviceById = async (deviceID: string) => {
+    getDevice = async (deviceID: string) => {
         try {
-            return await this.prisma.device.findUnique({
+            const device: Device = await this.getDeviceById(deviceID);
+            const deviceDto: GetDeviceDto = {
+                deviceID: device.deviceID,
+                softener: device.softener,
+                detergent: device.detergent,
+                createdAt: device.createdAt,
+                updatedAt: device.updatedAt,
+            };
+            this.logger.debug(`Device with ID: ${device.id} was found.`);
+            return deviceDto;
+        } catch (e) {
+            throw new ForbiddenException('Device is not found.');
+        }
+    };
+
+    getAllDevices = async () => {
+        try {
+            const devices: GetDeviceDto[] = await this.prisma.device.findMany({
+                select: {
+                    deviceID: true,
+                    softener: true,
+                    detergent: true,
+                    createdAt: true,
+                    updatedAt: true,
+                },
+            });
+            this.logger.debug(`Devices were found.`);
+            return devices;
+        } catch (e) {
+            throw new ForbiddenException('Devices are not found.');
+        }
+    };
+
+    private getDeviceById = async (deviceID: string) => {
+        try {
+            const device: Device = await this.prisma.device.findUnique({
                 where: { deviceID },
             });
+            return device;
         } catch (e) {
             throw new ForbiddenException('Device is not found.');
         }

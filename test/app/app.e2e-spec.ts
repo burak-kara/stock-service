@@ -1,6 +1,6 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { INestApplication } from '@nestjs/common';
-import { AppModule } from '../src/app/app.module';
+import { AppModule } from '../../src/app/app.module';
 import request from 'supertest';
 
 describe('AppController (e2e)', () => {
@@ -22,7 +22,7 @@ describe('AppController (e2e)', () => {
             .expect('Moved Permanently. Redirecting to health-check');
     });
 
-    it('/ (GET)', () => {
+    it('/health-check (GET)', () => {
         return request(app.getHttpServer()).get('/health-check').expect(200).expect('Up & running');
     });
 });
