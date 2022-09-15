@@ -28,6 +28,11 @@ is [here](https://join.slack.com/t/burak-test-workspace/shared_invite/zt-1fcqtf0
 - AWS CloudWatch
 - AWS CLoudFormation
 - GitHub Actions
+- Docker
+- Swagger
+- ReactJS (Frontend)
+- TailwindCSS (Frontend)
+- SASS (Frontend)
 
 ## Installation
 

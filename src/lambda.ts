@@ -34,7 +34,7 @@ async function bootstrapServer(): Promise<Server> {
                 transform: true,
             }),
         );
-        nestApp.setGlobalPrefix('api', {
+        nestApp.setGlobalPrefix('production/api', {
             exclude: [
                 {
                     path: '/',
