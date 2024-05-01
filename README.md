@@ -12,7 +12,6 @@ This project contains an example of a lambda function using NestJS.
 - Backend: [this repo](https://github.com/burak-kara/stock-service)
 - Frontend: [here](https://github.com/burak-kara/stock-service-db-visualizer)
 
-Both repositories are private, but you can request access from [burak.kara@ozu.edu.tr](mailto:burak.kara@ozu.edu.tr)
 Slack Workspace where all notifications sent during CI/CD
 is [here](https://join.slack.com/t/burak-test-workspace/shared_invite/zt-1fcqtf0xc-hhhXNw5ZtgCMquTqRU1sAw)
 
